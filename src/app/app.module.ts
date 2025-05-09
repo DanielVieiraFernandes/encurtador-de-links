@@ -1,18 +1,31 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { plainToClass } from 'class-transformer';
+import { validateSync } from 'class-validator';
 import { LinksModule } from 'src/http/link/links.module';
+import { Env } from 'src/infra/env/env.dto';
+import { EnvService } from 'src/infra/env/env.service';
 
 @Module({
   imports: [
-      ConfigModule.forRoot({
-        isGlobal: true,
-        validate: env => {
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: (env) => {
+        const validateConfig = plainToClass(Env, env);
 
-          //lógica com class-validator e class-transformer
+        const errors = validateSync(validateConfig);
 
-          return env;
+        if (errors.length > 0) {
+          throw new Error(
+            `Env validation failed: ${errors.map((err) => Object.values(err.constraints || {}).join(', ')).join('; ')}`,
+          );
         }
-      }),
-    LinksModule],
+
+        return validateConfig;
+      },
+    }),
+    LinksModule,
+  ],
+  providers: [EnvService],
 })
 export class AppModule {}

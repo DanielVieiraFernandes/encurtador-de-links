@@ -16,7 +16,7 @@ datasource db {
 model Link {
   id          Int       @id @default(autoincrement())
   originalUrl String
-  shortUrl    String
+  shortUrl    String @unique
   createdAt   DateTime  @default(now())
   updatedAt   DateTime?
 }

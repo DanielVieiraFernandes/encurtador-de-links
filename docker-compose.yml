@@ -1,0 +1,6 @@
+services:
+  encurtador-de-link:
+    container_name: redis-short-link
+    image: redis
+    ports:
+      - '6379:6379'
