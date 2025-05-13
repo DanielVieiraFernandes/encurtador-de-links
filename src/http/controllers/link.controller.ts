@@ -3,6 +3,7 @@ import { LinkService } from '../link/link.service';
 import { CreateShortLink } from '../link/dto/create-short-link.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { Response } from 'express';
+import { ClientIp } from 'src/infra/auth/client-ip';
 
 @Controller()
 export class LinkController {
@@ -28,9 +29,28 @@ export class LinkController {
   }
 
   @Get(':code')
-  async findByCode(@Param('code') code: string, @Res() res: Response) {
-    const originalUrl = await this.linkService.findByCode(code);
+  async findByCode(
+    @Param('code') code: string,
+    @Res() res: Response,
+    @ClientIp() ip: string,
+  ) {
+    const originalUrl = await this.linkService.findByCode(code, ip);
 
     return res.redirect(originalUrl);
+  }
+
+  @Get(':code/counts')
+  @ApiResponse({
+    status: 200,
+    example: {
+      counts: 12,
+    },
+  })
+  async returnCounts(@Param('code') code: string, @ClientIp() ip: string) {
+    const counts = await this.linkService.returnCounts(code, ip);
+
+    return {
+      counts,
+    };
   }
 }
