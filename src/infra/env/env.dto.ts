@@ -9,4 +9,13 @@ export class Env {
 
   @IsString()
   URL: string;
+
+  @IsString()
+  REDIS_HOST: string;
+
+  @IsNumberString()
+  REDIS_PORT: number;
+
+  @IsNumberString()
+  REDIS_DB: number;
 }

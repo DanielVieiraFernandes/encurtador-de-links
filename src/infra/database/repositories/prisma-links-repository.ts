@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { LinksRepository } from 'src/http/link/repositories/links-repository';
 import { PrismaService } from '../prisma.service';
 import { EnvService } from 'src/infra/env/env.service';
+import { ClickCountsRepository } from 'src/infra/redis/repositories/click-counts-repository';
+import { Link } from '@prisma/client';
 
 @Injectable()
 export class PrismaLinksRepository implements LinksRepository {
@@ -19,7 +21,7 @@ export class PrismaLinksRepository implements LinksRepository {
     });
   }
 
-  async findByCode(code: string): Promise<string | null> {
+  async findByCode(code: string): Promise<Link | null> {
     const shortUrl = this.env.get('URL') + '/' + code;
 
     const linkInfo = await this.prisma.link.findUnique({
@@ -32,8 +34,7 @@ export class PrismaLinksRepository implements LinksRepository {
       return null;
     }
 
-    const { originalUrl } = linkInfo;
 
-    return originalUrl;
+    return linkInfo;
   }
 }

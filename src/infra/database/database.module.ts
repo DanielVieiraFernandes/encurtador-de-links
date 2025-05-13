@@ -4,6 +4,7 @@ import { LinksRepository } from 'src/http/link/repositories/links-repository';
 import { PrismaLinksRepository } from './repositories/prisma-links-repository';
 import { PrismaService } from './prisma.service';
 import { EnvService } from '../env/env.service';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
   providers: [
